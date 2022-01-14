@@ -13,7 +13,9 @@ const Auth = ()=>{
     const [password, setPassword] = useState("");
     const onChange = (e) =>{
         console.log(e.target.name);
-        성 = e;
+
+        // 이벤트가 발생할 때, 폼태그 이름을 가져와서 구분하여 값을 별도로 처리함
+        const {target: {name, value}} = e;
 
         if (name === "email") {
             setEmail(value);
@@ -24,12 +26,13 @@ const Auth = ()=>{
     const onSubmit = (e) => {
       e.preventDefault();
     }
+
     return (
         <div>
             <form onSubmit={onSubmit}>
                 <input onChange={onChange} name="email" type="text" placeholder="Email" required value={email} />
                 <input onChange={onChange} name="password" type="password" placeholder="Password" required value={password}/>
-                <input type="submit" placeholder="Log In" required />
+                <input type="submit" value="Log In" required />
             </form>
             <div>
                 <button>Continue with Google</button>
