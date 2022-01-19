@@ -1,6 +1,10 @@
 import React, {useState} from "react";
-import {authService} from "../firebaseInstance";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, } from "firebase/auth";
+import {firebaseApp, authService} from "../firebaseInstance";
+import { getAuth,
+    signInWithEmailAndPassword, createUserWithEmailAndPassword,
+    GithubAuthProvider, GoogleAuthProvider,
+    signInWithPopup } from "firebase/auth";
+
 
 /**
  * 로그인 인증 처리
@@ -146,6 +150,34 @@ const Auth = ()=>{
     };
 
     const toggleAccount = () => setNewAccount((prev) => !prev);
+    /**
+     * 구글, 깃허브 계정으로 인증(소셜로그인)
+     * 파이어베이스 모듈을 통하여, 인증 팝업을 통하여 인증
+     * @param e
+     * @returns {Promise<void>}
+     */
+    const onSocialClick = async (e) => {
+        // console.log(e.target.name);
+        const {
+            target: {name},
+        } = e;
+
+        let provider;
+
+        if (name === "google") {
+            // provider = new firebaseApp.auth.GoogleAuthProvider(); // 파이어베이스 8.0
+            provider = new GoogleAuthProvider();    // 파이어베이스 9.0
+        } else {
+            // provider = new firebaseApp.auth.GithubAuthProvider();
+            provider = new GithubAuthProvider();
+        }
+
+        const data = await signInWithPopup(fbAuth, provider);
+
+        // console.log("onSocialClick: "+name);
+        // console.log(data);
+
+    }
 
     return (
         <div>
@@ -159,8 +191,8 @@ const Auth = ()=>{
             </form>
             <span onClick={toggleAccount}>{newAccount ? "Sign in" : "Create Account"}</span>
             <div>
-                <button>Continue with Google</button>
-                <button>Continue with Github</button>
+                <button onClick={onSocialClick} name="google">Continue with Google</button>
+                <button onClick={onSocialClick} name="github">Continue with Github</button>
             </div>
         </div>
     )
