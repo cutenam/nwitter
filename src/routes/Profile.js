@@ -1,7 +1,7 @@
 import React from "react";
 import {authService} from "firebaseInstance";
-// import {useHistory} from "react-router-dom";
-import {useNavigate} from "react-router-dom";
+// import {useHistory} from "react-router-dom";  // v5
+import {useNavigate} from "react-router-dom";    // v6
 
 // export default ()=> <span>Profile</span>;
 // const Profile = ()=> <span>Profile</span>;
