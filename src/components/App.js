@@ -36,6 +36,9 @@ function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(authCurrentUser);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // 현재 로그인된 사용자 정보 스테이트
+  const [userObj, setUserObj] = useState(null);
+
   // onAuthStateChanged : 사용자의 인증 관련(생성, 로그인, 로그아웃등) 이벤트 발생
   // 로그아웃은 브라우저 indexedDB데이터를 삭제하면 이벤트 발생함
   // 실제 로그인된 시점을 알 수 있음
@@ -45,6 +48,7 @@ function App() {
           // 사용자 정보가 있으면 로그인 된것으로,,,
           if (user) {
             setIsLoggedIn(true);
+            setUserObj(user);   // 로그인된 사용자 정보, AppRouter 컴포넌트에 프로퍼티로 보냄
           } else {
             setIsLoggedIn(false);
           }
@@ -56,8 +60,8 @@ function App() {
   return (
       <>
           {/* 파이어베이스 초기화 여부에 따라 메뉴 오픈 여부 처리 */}
-          {init ? <AppRouter isLoggedIn={isLoggedIn}/> : "Initialilizing..."}
-       <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
+          {init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj}/> : "Initialilizing..."}
+          <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
       </>
 
   );
