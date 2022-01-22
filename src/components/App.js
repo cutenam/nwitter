@@ -61,7 +61,7 @@ function App() {
       <>
           {/* 파이어베이스 초기화 여부에 따라 메뉴 오픈 여부 처리 */}
           {init ? <AppRouter isLoggedIn={isLoggedIn} userObj={userObj}/> : "Initialilizing..."}
-          <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
+          {/*<footer>&copy; Nwitter {new Date().getFullYear()}</footer>*/}
       </>
 
   );

@@ -141,10 +141,39 @@ const Home =  ({userObj}) => {
     }
     // console.log(nweets);
 
+    const onFileChange = (e) => {
+        // console.log(e.target.files);
+        const {
+          target: {files},
+        } = e;
+
+        const theFile = files[0];
+        // console.log(theFile);
+        /**
+         * {name: 'ibuni-1.jpg', lastModified: 1636950396778, lastModifiedDate: Mon Nov 15 2021 13:26:36 GMT+0900 (일본 표준시), webkitRelativePath: '', size: 8116, …}
+         */
+
+        const reader = new FileReader(); // DOM API
+
+        reader.onloadend = (finishedEvent) => {
+            console.log(finishedEvent);
+            /**
+             * {isTrusted: true, lengthComputable: true, loaded: 8116, total: 8116, type: 'loadend', …}
+             * // 파일 데이터, 브라우저 주소창에 넣으면 사진이 보임
+             * data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD...
+             */
+        };
+        reader.readAsDataURL(theFile);  //  파일 읽어옴, 완료되면 onloadend 이벤트 발생
+
+
+
+    }
+
     return (
     <div>
         <form onSubmit={onSubmit}>
             <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120}/>
+            <input onChange={onFileChange} type="file" accept="image/*"/>
             <input type="submit" value="Nweet"/>
         </form>
         <div>
