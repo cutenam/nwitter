@@ -59,9 +59,12 @@ const Nweet = ({nweetObj, isOwner}) => {
         // });
 
         // v9
-        const nweetDocRef = doc(dbService, "nweets", `${nweetObj.id}`);
+        // const nweetDocRef = doc(dbService, "nweets", `${nweetObj.id}`);
         // console.log(nweetDocRef);
-        await updateDoc(nweetDocRef, {
+        // await updateDoc(nweetDocRef, {
+        //     text: newNweet,
+        // });
+        await updateDoc(doc(dbService, `nweets/${nweetObj.id}`), {
             text: newNweet,
         });
 
