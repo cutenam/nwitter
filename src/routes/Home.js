@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {dbService} from "firebaseInstance";
 import {collection, addDoc, getDocs,
     onSnapshot,
@@ -20,6 +20,7 @@ const Home =  ({userObj}) => {
     // console.log(userObj);
     const [nweet, setNweet] = useState("");  // 트윗 입력 값 스테이트
     const [nweets, setNweets] = useState([]); // 조회된 트윗 데이터 스테이트
+    const [attachment, setAttachment] = useState();  // 파일 API　를 통해 읽은 파일 스트링 데이터 스테이트
     // v8
     // const getNweets = async() => {
     //     dbService.collection("nweets".get())
@@ -141,8 +142,13 @@ const Home =  ({userObj}) => {
     }
     // console.log(nweets);
 
+    /**
+     * 이미지 프리뷰를 위한 이벤트 처리
+     * input file
+     * @param e
+     */
     const onFileChange = (e) => {
-        // console.log(e.target.files);
+        console.log(e.target.files);
         const {
           target: {files},
         } = e;
@@ -162,19 +168,39 @@ const Home =  ({userObj}) => {
              * // 파일 데이터, 브라우저 주소창에 넣으면 사진이 보임
              * data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAASABIAAD...
              */
+            const {
+                currentTarget: {result},
+            } = finishedEvent;
+
+            // 파일 데이터 스테이트 세팅
+            setAttachment(result);
         };
         reader.readAsDataURL(theFile);  //  파일 읽어옴, 완료되면 onloadend 이벤트 발생
-
-
-
     }
+    
+    // const onClearAttachment = () => setAttachment(null);
+
+    const attachmentFile = useRef();  // 리액트 dom 접근 훅, 리액트는 dom 쿼리를 직접 사용하지 않는 것을 권함
+    const onClearAttachment = () => {
+        setAttachment(null);
+        attachmentFile.current.value = null;  // 　input file　객체를 null　로 만듬
+    }
+
 
     return (
     <div>
         <form onSubmit={onSubmit}>
             <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120}/>
-            <input onChange={onFileChange} type="file" accept="image/*"/>
+            <input onChange={onFileChange} type="file" accept="image/*" ref={attachmentFile}/>
             <input type="submit" value="Nweet"/>
+            {
+                // 이미지 데이터가 있으면 이미지를 보여줌
+                attachment &&
+                   ( <div>
+                        <img src={attachment} width="100%" height="auto"/>
+                        <button onClick={onClearAttachment}>Clear</button>
+                    </div>)
+            }
         </form>
         <div>
             {/*{*/}
