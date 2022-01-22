@@ -5,7 +5,8 @@ import {collection, addDoc, getDocs,
     orderBy,
     query,
     where,
-    serverTimestamp} from "firebase/firestore";  // v9
+    serverTimestamp} from "firebase/firestore";
+import Nweet from "components/Nweet";  // v9
 
 // export default ()=> <span>Home</span>;
 // const Home =  ()=> <span>Home</span>;
@@ -147,11 +148,23 @@ const Home =  ({userObj}) => {
             <input type="submit" value="Nweet"/>
         </form>
         <div>
+            {/*{*/}
+            {/*    nweets.map(nweet =>*/}
+            {/*        <div key={nweet.id}>*/}
+            {/*            <h4>{nweet.text}</h4>*/}
+            {/*        </div>*/}
+            {/*    )*/}
+            {/*}*/}
+            {/*Nweet 컴포넌트로 분리함
+                props : nweetObj - 데이터베이스 도큐먼트 메시지
+                        isOwner - 데이터베이스 도큐먼트 작성자 id, 현재로그인된 사용자 id 일치여부 bool
+            */}
             {
                 nweets.map(nweet =>
-                    <div key={nweet.id}>
-                        <h4>{nweet.text}</h4>
-                    </div>
+                    <Nweet key={nweet.id}
+                           nweetObj={nweet}
+                           isOwner={nweet.creatorId === userObj.uid}
+                    />
                 )
             }
         </div>
