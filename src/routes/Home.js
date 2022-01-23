@@ -1,12 +1,15 @@
 import React, {useEffect, useState, useRef} from "react";
-import {dbService} from "firebaseInstance";
+import { v4 as uuidv4 } from "uuid";
+import {dbService, storageService} from "firebaseInstance";
 import {collection, addDoc, getDocs,
     onSnapshot,
     orderBy,
     query,
     where,
     serverTimestamp} from "firebase/firestore";
+import {ref, uploadString} from "firebase/storage"; // v9
 import Nweet from "components/Nweet";  // v9
+
 
 // export default ()=> <span>Home</span>;
 // const Home =  ()=> <span>Home</span>;
@@ -16,6 +19,7 @@ import Nweet from "components/Nweet";  // v9
  * @returns {JSX.Element}
  * @constructor
  */
+
 const Home =  ({userObj}) => {
     // console.log(userObj);
     const [nweet, setNweet] = useState("");  // 트윗 입력 값 스테이트
@@ -113,6 +117,24 @@ const Home =  ({userObj}) => {
     // v9
     const onSubmit = async (e) => {
         e.preventDefault();
+        // storage Reference 에서 폴더를 만들 수 있다. 콜렉션과 비슷
+        // 파일 이름은 중복되지 않도록 랜덤함수 등 이용(직접만들어도 되고, 노드 패키지 사용가능 npm install uuid )
+        // 파일에 대한 레퍼런스 만듬
+        // v8
+        // const fileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
+        // format : FileReader 로 읽은 데이터 url?
+        // const response = await fileRef.putString(attachment, "data_url");
+
+        // v9
+        try {
+            const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+            // console.log(fileRef);
+            const response = await uploadString(fileRef, attachment, "data_url");
+            // console.log(response);
+        } catch (error) {
+            console.log("Error uploadString:", error);
+        }
+
         // 파이어스토어에 콜렉션 생성하는 메소드, v8
         // dbService.collection("nweets").add({
         //     nweet: nweet,  // 도큐먼트 키, 스테이트 변수와 맞춤
@@ -122,12 +144,12 @@ const Home =  ({userObj}) => {
 
         // 파이어스토어에 콜렉션 생성하는 메소드, v9
         try {
-          await addDoc(collection(dbService, "nweets"),
-              {
-                  text: nweet,          // 도큐먼트 키, 스테이트 변수와 맞춤
-                  createdAt: Date.now(), // 생성날짜
-                  creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
-              })
+          // await addDoc(collection(dbService, "nweets"),
+          //     {
+          //         text: nweet,          // 도큐먼트 키, 스테이트 변수와 맞춤
+          //         createdAt: Date.now(), // 생성날짜
+          //         creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
+          //     })
         } catch (error) {
             console.error("Error adding document:", error);
         }
@@ -162,7 +184,7 @@ const Home =  ({userObj}) => {
         const reader = new FileReader(); // DOM API
 
         reader.onloadend = (finishedEvent) => {
-            console.log(finishedEvent);
+            // console.log(finishedEvent);
             /**
              * {isTrusted: true, lengthComputable: true, loaded: 8116, total: 8116, type: 'loadend', …}
              * // 파일 데이터, 브라우저 주소창에 넣으면 사진이 보임
