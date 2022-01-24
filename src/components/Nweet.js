@@ -23,12 +23,13 @@ const Nweet = ({nweetObj, isOwner}) => {
     // 해당 메시지의 도큐먼트 id (nweetObj.id)를 이용하여 삭제함
     const onDeleteClick = async () => {
         const ok = window.confirm("Are you sure want to delete this nweet?");
-        console.log(ok);
+        // console.log(ok);
 
        // v8
        //  if(ok){
        //      //delete
-       //      await dbService.doc(`nweets/${nweetObj.id}`).delete();
+       //      await dbService.doc(`nweets/${nweetObj.id}`).delete();  // 도큐먼트 삭제
+       //      await storageService.refFromURL(nweetObj.attachmentUrl).delete();  // 파일스토리지 파일 삭제
        //  }
 
         // v9
@@ -37,6 +38,7 @@ const Nweet = ({nweetObj, isOwner}) => {
 
         if(ok) {
            await deleteDoc(nweetDocRef);
+           await deleteObject(ref(storageService, nweetObj.attachmentUrl));
         }
     }
 
