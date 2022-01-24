@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {dbService} from "firebaseInstance";
+import {dbService, storageService} from "firebaseInstance";
 import {collection, addDoc, getDocs,
     doc,
     deleteDoc,
@@ -9,6 +9,7 @@ import {collection, addDoc, getDocs,
     query,
     where,
     serverTimestamp} from "firebase/firestore";
+import {ref, deleteObject} from "firebase/storage"; // v9
 
 const Nweet = ({nweetObj, isOwner}) => {
     // 수정 모드 알려주는 스테이트변수
@@ -78,17 +79,21 @@ const Nweet = ({nweetObj, isOwner}) => {
            {
                // 수정 버튼 true/false 에 따라, 입력폼 또는 메시지조회 화면 보여줌
                editing ?
-                   <>
+                   (<>
                        <form onSubmit={onSubmit}>
                            <input onChange={onChange} type="text" placeholder="Edit your nweet" value={newNweet} required/>
                            <input type="submit" value="Update Nweet"/>
                        </form>
 
                        <button onClick={toggleEditing}>Cancel</button>
-                   </>
+                   </>)
                    :
-                   <>
+                   (<>
                        <h4>{nweetObj.text}</h4>
+                       {
+                           nweetObj.attachmentUrl &&
+                           <img src={nweetObj.attachmentUrl} width="50px" height="50px"/>
+                       }
                        {
                            // 본인이 작성한 트윗에서만 삭제, 수정 버튼이 보이도록함
                            isOwner &&
@@ -97,7 +102,7 @@ const Nweet = ({nweetObj, isOwner}) => {
                            <button onClick={toggleEditing}>Edit Nweet</button>
                            </>
                        }
-                   </>
+                   </>)
            }
         </div>
    );

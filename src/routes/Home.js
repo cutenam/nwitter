@@ -24,7 +24,7 @@ const Home =  ({userObj}) => {
     // console.log(userObj);
     const [nweet, setNweet] = useState("");  // 트윗 입력 값 스테이트
     const [nweets, setNweets] = useState([]); // 조회된 트윗 데이터 스테이트
-    const [attachment, setAttachment] = useState();  // 파일 API　를 통해 읽은 파일 스트링 데이터 스테이트
+    const [attachment, setAttachment] = useState(null);  // 파일 API　를 통해 읽은 파일 스트링 데이터 스테이트
     // v8
     // const getNweets = async() => {
     //     dbService.collection("nweets".get())
@@ -121,15 +121,38 @@ const Home =  ({userObj}) => {
         // 파일 이름은 중복되지 않도록 랜덤함수 등 이용(직접만들어도 되고, 노드 패키지 사용가능 npm install uuid )
         // 파일에 대한 레퍼런스 만듬
         // v8
-        // const fileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
+        // const attachmentfileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
         // format : FileReader 로 읽은 데이터 url?
-        // const response = await fileRef.putString(attachment, "data_url");
+        // const response = await attachmentfileRef.putString(attachment, "data_url");
+        // console.log(await response.ref.getDownloadURL()) // 다운로드 URL　제공
+        // const attachmentUrl = await response.ref.getDownloadURL();
+
+        let attachmentUrl = "";
+
+        // 첨부이미지가 있는 경우만 스토리지 API 호출
+        if(attachment !== null) {
+            // v8
+            // const attachmentfileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
+            // const response = await attachmentfileRef.putString(attachment, "data_url");
+            // console.log(await response.ref.getDownloadURL()) // 다운로드 URL　제공
+            // const attachmentUrl = await response.ref.getDownloadURL();
+            attachmentUrl = "https://firebasestorage.googleapis.com/v0/b/nwitter-8cd1d.appspot.com/o/ibuni-1.jpg?alt=media&token=1103fa94-af2f-4a7f-af4f-25fa557f956b"
+        }
+
+        // 이미지 URL　을 포함하여 도큐먼트 생성 객체를 만듬
+        const docNweet = {
+            text: nweet,          // 도큐먼트 키, 스테이트 변수와 맞춤
+            createdAt: Date.now(), // 생성날짜
+            creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
+            attachmentUrl
+        }
 
         // v9
         try {
-            const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+            // const attachmentfileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+            // const attachmentfileRef = ref(storageService, "images/1");
             // console.log(fileRef);
-            const response = await uploadString(fileRef, attachment, "data_url");
+            // const response = await uploadString(attachmentfileRef, attachment, "data_url");
             // console.log(response);
         } catch (error) {
             console.log("Error uploadString:", error);
@@ -150,11 +173,15 @@ const Home =  ({userObj}) => {
           //         createdAt: Date.now(), // 생성날짜
           //         creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
           //     })
+            await addDoc(collection(dbService, "nweets"), docNweet);
+
         } catch (error) {
             console.error("Error adding document:", error);
         }
 
-        setNweet(""); // 트윗작성 후 서브밋하면, 입력 창은 비워둠
+        setNweet("");       // 트윗작성 후 서브밋하면, 입력 창은 비워둠
+        setAttachment(null);   // 이미지 관련 스테이트변수 초기화
+        attachmentFile.current.value = null;  // 　input file　객체를 null　로 만듬
     }
 
     const onChange = (e) => {
