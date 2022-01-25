@@ -17,7 +17,7 @@ const AppRouter= ({isLoggedIn, userObj}) => {
     return (
         <BrowserRouter>
             {/* isLoggedIn　이 true 일때  Navigation 이 보임, false 이면  isLoggedIn 이 보임*/}
-            {isLoggedIn && <Navigation /> }
+            {isLoggedIn && <Navigation userObj={userObj} /> }
             <Routes>
                 {
                     isLoggedIn ?
@@ -32,7 +32,7 @@ const AppRouter= ({isLoggedIn, userObj}) => {
                     (
                         <>
                             <Route path="/" element={<Auth/>} />
-                            {/*<Route path="/*" element={<Navigate replace to="/" />}/>*/}
+                            <Route path="/*" element={<Navigate replace to="/" />}/>
                         </>
 
                     )

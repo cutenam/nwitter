@@ -48,7 +48,15 @@ function App() {
           // 사용자 정보가 있으면 로그인 된것으로,,,
           if (user) {
             setIsLoggedIn(true);
+
+
+            // 소셜로그인 외의 사용자인 경우, displayName 정보가 없으므로,　이메일정보를 임의로 넣어줌
+            if (!user.displayName) {
+                user.displayName = user.email;
+            }
             setUserObj(user);   // 로그인된 사용자 정보, AppRouter 컴포넌트에 프로퍼티로 보냄
+            console.log(user);
+
           } else {
             setIsLoggedIn(false);
           }
