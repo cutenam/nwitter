@@ -7,7 +7,7 @@ import {collection, addDoc, getDocs,
     query,
     where,
     serverTimestamp} from "firebase/firestore";
-import {ref, uploadString} from "firebase/storage"; // v9
+import {ref, uploadString, getDownloadURL} from "firebase/storage"; // v9
 import Nweet from "components/Nweet";  // v9
 
 
@@ -130,13 +130,37 @@ const Home =  ({userObj}) => {
         let attachmentUrl = "";
 
         // 첨부이미지가 있는 경우만 스토리지 API 호출
-        if(attachment !== null) {
-            // v8
-            // const attachmentfileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
-            // const response = await attachmentfileRef.putString(attachment, "data_url");
-            // console.log(await response.ref.getDownloadURL()) // 다운로드 URL　제공
-            // const attachmentUrl = await response.ref.getDownloadURL();
-            attachmentUrl = "https://firebasestorage.googleapis.com/v0/b/nwitter-8cd1d.appspot.com/o/ibuni-1.jpg?alt=media&token=1103fa94-af2f-4a7f-af4f-25fa557f956b"
+        // if(attachment !== null) {
+        //     // v8
+        //     const attachmentfileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
+        //     const response = await attachmentfileRef.putString(attachment, "data_url");
+        //     console.log(await response.ref.getDownloadURL()) // 다운로드 URL　제공
+        //     const attachmentUrl = await response.ref.getDownloadURL();
+        //     attachmentUrl = "https://firebasestorage.googleapis.com/v0/b/nwitter-8cd1d.appspot.com/o/ibuni-1.jpg?alt=media&token=1103fa94-af2f-4a7f-af4f-25fa557f956b"
+        // }
+
+        // 이미지 URL　을 포함하여 도큐먼트 생성 객체를 만듬
+        // const docNweet = {
+        //     text: nweet,          // 도큐먼트 키, 스테이트 변수와 맞춤
+        //     createdAt: Date.now(), // 생성날짜
+        //     creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
+        //     attachmentUrl
+        // }
+
+        // v9
+        try {
+            // 첨부이미지가 있는 경우만 스토리지 API 호출
+            if(attachment !== null) {
+                const attachmentfileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+                // const attachmentfileRef = ref(storageService, "images/1");
+                console.log(attachmentfileRef);
+                const response = await uploadString(attachmentfileRef, attachment, "data_url");
+                console.log(response);
+                attachmentUrl = await getDownloadURL(response.ref);
+                console.log(attachmentUrl);
+            }
+        } catch (error) {
+            console.log("Error uploadString:", error);
         }
 
         // 이미지 URL　을 포함하여 도큐먼트 생성 객체를 만듬
@@ -145,17 +169,6 @@ const Home =  ({userObj}) => {
             createdAt: Date.now(), // 생성날짜
             creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
             attachmentUrl
-        }
-
-        // v9
-        try {
-            // const attachmentfileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
-            // const attachmentfileRef = ref(storageService, "images/1");
-            // console.log(fileRef);
-            // const response = await uploadString(attachmentfileRef, attachment, "data_url");
-            // console.log(response);
-        } catch (error) {
-            console.log("Error uploadString:", error);
         }
 
         // 파이어스토어에 콜렉션 생성하는 메소드, v8
