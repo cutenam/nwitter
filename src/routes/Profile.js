@@ -13,7 +13,12 @@ import {useNavigate} from "react-router-dom";    // v6
 
 // export default ()=> <span>Profile</span>;
 // const Profile = ()=> <span>Profile</span>;
-const Profile = ({userObj}) => {
+const Profile = ({refreshUser, userObj}) => {
+
+    // userObj 를 상위 컴포넌트에서 받지 않고, auth모듈 통해서 가져올 수도 있지 않나?
+    // authService.currentUser.uid 이러한 방식으로...
+    // 그러나, 모든 컴포넌트에서 모듈을 이용해서 읽거나, 업데이트하게되면, 사용자 정보가 변경의 일관성이 없어지게 됨
+    // 리액트 프레임웍의 기능을 이용해서, 한 곳에서 정보의 변화를 관리하고, 변경되면 다른 컴포넌트에도 동일하게 변경될수 있도록 함(리렌더링)
 
     const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
 
@@ -81,7 +86,24 @@ const Profile = ({userObj}) => {
             // })
 
             //v9
+            // await updateProfile(authService.currentUser, {displayName: newDisplayName});
             await updateProfile(userObj, {displayName: newDisplayName});
+            /**
+             * Uncaught (in promise) TypeError: userInternal.getIdToken is not a function
+             *     at updateProfile (account_info.ts:50:1)
+             *     at onSubmit (Profile.js:90:1)
+             *     at HTMLUnknownElement.callCallback (react-dom.development.js:3945:1)
+             *     at Object.invokeGuardedCallbackDev (react-dom.development.js:3994:1)
+             *     at invokeGuardedCallback (react-dom.development.js:4056:1)
+             *     at invokeGuardedCallbackAndCatchFirstError (react-dom.development.js:4070:1)
+             *     at executeDispatch (react-dom.development.js:8243:1)
+             *     at processDispatchQueueItemsInOrder (react-dom.development.js:8275:1)
+             *     at processDispatchQueue (react-dom.development.js:8288:1)
+             *     at dispatchEventsForPlugins (react-dom.development.js:8299:1)
+             */
+            // App.js 에서 처음 만들어진 사용자 정보 객체 (userObj) 를 파이어베이스 auth데이터와 동기화 시켜주는 역할
+            // 이 함수는 App.js　에서 props 형태로 하위 컴포넌트로 계속 전달됨
+            refreshUser();
         }
     }
 
