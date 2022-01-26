@@ -10,6 +10,9 @@ import Navigation from "components/Navigation";
 
 // 로그인 여부에 따라
 const AppRouter= ({refreshUser, isLoggedIn, userObj}) => {
+// const AppRouter= ({refreshUser, userObj}) => {
+    console.log("Router.js: ", userObj)
+    // console.log("isLoggedIn :", isLoggedIn)
     // 로그인 여부 스테이트 -> App.js 로 이동함
     // const [isLoggedIn, setIsLoggedIn] = useState(true);
     /*  <></<> fragment : 여러 엘리먼트들을 렌더링할 필요가 있을때, 그것을 한번에 모아 렌더링이 가능하도록 빈 엘리번트로 감싸줌 */
@@ -21,6 +24,7 @@ const AppRouter= ({refreshUser, isLoggedIn, userObj}) => {
             <Routes>
                 {
                     isLoggedIn ?
+                    // Boolean(userObj)?
                     (
                         <>
                             <Route path="/" element={<Home userObj={userObj}/>} />

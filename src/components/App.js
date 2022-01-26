@@ -5,6 +5,7 @@ import AppRouter from "components/Router";
 // import firebase from "firebaseInstance";
 import {firebaseApp, authService} from "firebaseInstance";
 // import authService from "firebaseInstance";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 /**
  * App
@@ -16,7 +17,7 @@ import {firebaseApp, authService} from "firebaseInstance";
  */
 
 // App.js　에서 어플리케이션의 모든 로직을 핸들링하도록 구조를 잡을거라 함
-function App() {
+const App = () => {
 
   // const auth = fbase.auth();
   const auth = authService;
@@ -34,7 +35,7 @@ function App() {
   const [init, setInit] = useState(false);
 
   // 로그인 여부 스테이트 -> Router.js에 props로 전달함
-  // const [isLoggedIn, setIsLoggedIn] = useState(authCurrentUser);
+   // const [isLoggedIn, setIsLoggedIn] = useState(authCurrentUser);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 현재 로그인된 사용자 정보 스테이트
@@ -43,12 +44,16 @@ function App() {
   // onAuthStateChanged : 사용자의 인증 관련(생성, 로그인, 로그아웃등) 이벤트 발생
   // 로그아웃은 브라우저 indexedDB데이터를 삭제하면 이벤트 발생함
   // 실제 로그인된 시점을 알 수 있음
-  useEffect(()=>{
-      authService.onAuthStateChanged((user) => {
-          // console.log(user);
+  useEffect( ()=>{
+      console.log("App.js: useEffect");
+      // await authService.onAuthStateChanged( (user) => {
+      onAuthStateChanged(getAuth(), (user) => {
+          console.log("App.js : ", user);
           // 사용자 정보가 있으면 로그인 된것으로,,,
           if (user) {
-            setIsLoggedIn(true);
+              // 로그인 여부 값은, 파이어베이스 인증이 호출되고, 스테이트변수 userObj 가 세팅되어야 로그인 된 것으로 볼 수 있으므로, 로직 내에서 동기식 판별은 불가
+              // 리액트 return() 실행 전, 본 함수가 완전 수행 된 다음, 리액트 내부에서 렌더링 처리 과정에, 스테이트 변수 userObj 값이 설정된 것으로 판단하는 것이 맞음
+              // setIsLoggedIn(true);
 
             // console.log(user.updateProfile);  // v9 버전에서는 undefined
 
@@ -67,7 +72,8 @@ function App() {
                 // v9 버전에서는 별도 API 로 나누어졌기때문에, 필요없음
                 // updateProfile: (args) => user.updateProfile(args)
             });
-            // console.log(user);
+            // 스테이트변수 설정이 비동기이기때문에 바로 값이 설정되지 않는다...
+            // console.log("userObj: ", userObj);
 
             // 두번째 방법
             // setUserObj(user);
@@ -75,10 +81,15 @@ function App() {
 
           } else {
             setIsLoggedIn(false);
+            // 로그아웃 관련 수정중...
+            // 커스터마이징된 userObj 이므로 로그인상태가 아니면 초기화해 줌
+            setUserObj(null);
           }
           // 파이어베이스가 구동된 것으로 함
           setInit(true);
-      })
+          // setIsLoggedIn(Boolean(userObj));
+      });
+
   }, []);
 
   // 현재 사용자를 새로고침해주는 기능의 함수
@@ -113,7 +124,13 @@ function App() {
   return (
       <>
           {/* 파이어베이스 초기화 여부에 따라 메뉴 오픈 여부 처리 */}
-          {init ? <AppRouter refreshUser={refreshUser} isLoggedIn={isLoggedIn} userObj={userObj}/> : "Initialilizing..."}
+          { init ?
+              // <AppRouter refreshUser={refreshUser} isLoggedIn={isLoggedIn} userObj={userObj}/>
+              // 스테이트 변수 isLoggedIn 값은 스테이트 변수 userObj 값이 세팅되어야 로그인 된것으로 판별할 수 있기에, 아래와 같이 수정함
+              <AppRouter refreshUser={refreshUser} isLoggedIn={Boolean(userObj)} userObj={userObj}/>
+              // <AppRouter refreshUser={refreshUser} userObj={userObj}/>
+              : "Initialilizing..."
+          }
           {/*<footer>&copy; Nwitter {new Date().getFullYear()}</footer>*/}
       </>
 

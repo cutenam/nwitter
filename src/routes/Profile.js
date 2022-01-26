@@ -8,7 +8,7 @@ import {collection, addDoc, getDocs,
     serverTimestamp} from "firebase/firestore";
 import { updateProfile } from "firebase/auth";  // v9
 // import {useHistory} from "react-router-dom";  // v5
-import {useNavigate} from "react-router-dom";    // v6
+import { useNavigate } from "react-router-dom";    // v6
 
 
 // export default ()=> <span>Profile</span>;
@@ -37,6 +37,8 @@ const Profile = ({refreshUser, userObj}) => {
         authService.signOut();
         // history.push("/");
         navigate("/");
+        // 없으면, 컴포넌트 렌더링 에러 발생, userObj 재설정 해줌...
+        // refreshUser();
     };
 
     const getMyNweets = async() => {
@@ -86,8 +88,8 @@ const Profile = ({refreshUser, userObj}) => {
             // })
 
             //v9
-            // await updateProfile(authService.currentUser, {displayName: newDisplayName});
-            await updateProfile(userObj, {displayName: newDisplayName});
+            await updateProfile(authService.currentUser, {displayName: newDisplayName});
+            // await updateProfile(userObj, {displayName: newDisplayName});
             /**
              * Uncaught (in promise) TypeError: userInternal.getIdToken is not a function
              *     at updateProfile (account_info.ts:50:1)

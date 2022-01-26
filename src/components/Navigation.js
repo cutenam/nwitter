@@ -5,7 +5,8 @@ import Profile from "routes/Profile";
 
 
 const Navigation = ({userObj}) => {
-
+    console.log("Navigation :", userObj);
+    console.log(userObj.displayName);
     return (
         <nav>
             <ul>
