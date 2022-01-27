@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/cutenam/nwitter/static/css/main.d077b48a.css",
+    "main.js": "/cutenam/nwitter/static/js/main.1ed8ba33.js",
+    "index.html": "/cutenam/nwitter/index.html",
+    "main.d077b48a.css.map": "/cutenam/nwitter/static/css/main.d077b48a.css.map",
+    "main.1ed8ba33.js.map": "/cutenam/nwitter/static/js/main.1ed8ba33.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d077b48a.css",
+    "static/js/main.1ed8ba33.js"
+  ]
+}
