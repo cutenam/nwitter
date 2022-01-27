@@ -21,27 +21,38 @@ const AppRouter= ({refreshUser, isLoggedIn, userObj}) => {
         <BrowserRouter>
             {/* isLoggedIn　이 true 일때  Navigation 이 보임, false 이면  isLoggedIn 이 보임*/}
             {isLoggedIn && <Navigation userObj={userObj} /> }
-            <Routes>
-                {
-                    isLoggedIn ?
-                    // Boolean(userObj)?
-                    (
-                        <>
-                            <Route path="/" element={<Home userObj={userObj}/>} />
-                            <Route path="/profile" element={<Profile refreshUser={refreshUser} userObj={userObj}/>} />
-                            {/*<Route path="/*" element={<Navigate replace to="/" /> }/>*/}
-                        </>
-                    )
-                    :
-                    (
-                        <>
-                            <Route path="/" element={<Auth/>} />
-                            <Route path="/*" element={<Navigate replace to="/" />}/>
-                        </>
+            <div
+                style={{
+                    maxWidth: 890,
+                    width: "100%",
+                    margin: "0 auto",
+                    marginTop: 80,
+                    display: "flex",
+                    justifyContent: "center",
+                }}
+            >
+                <Routes>
+                    {
+                        isLoggedIn ?
+                        // Boolean(userObj)?
+                        (
+                            <>
+                                <Route path="/" element={<Home userObj={userObj}/>} />
+                                <Route path="/profile" element={<Profile refreshUser={refreshUser} userObj={userObj}/>} />
+                                {/*<Route path="/*" element={<Navigate replace to="/" /> }/>*/}
+                            </>
+                        )
+                        :
+                        (
+                            <>
+                                <Route path="/" element={<Auth/>} />
+                                <Route path="/*" element={<Navigate replace to="/" />}/>
+                            </>
 
-                    )
-                }
-            </Routes>
+                        )
+                    }
+                </Routes>
+            </div>
         </BrowserRouter>
     )};
 

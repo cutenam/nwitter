@@ -3,6 +3,8 @@ import {getDownloadURL, ref, uploadString} from "firebase/storage";
 import {dbService, storageService} from "firebaseInstance";
 import {v4 as uuidv4} from "uuid";
 import {addDoc, collection} from "firebase/firestore";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * 트윗 메시지작성, 파일첨부 기능
@@ -17,6 +19,11 @@ const NweetFactory = ({userObj}) => {
     const [attachment, setAttachment] = useState(null);  // 파일 API　를 통해 읽은 파일 스트링 데이터 스테이트
 
     const onSubmit = async (e) => {
+        // 스타일링 부분에서 추가됨...
+        if (nweet === "") {
+            return;
+        }
+
         e.preventDefault();
         // storage Reference 에서 폴더를 만들 수 있다. 콜렉션과 비슷
         // 파일 이름은 중복되지 않도록 랜덤함수 등 이용(직접만들어도 되고, 노드 패키지 사용가능 npm install uuid )
@@ -142,16 +149,51 @@ const NweetFactory = ({userObj}) => {
     }
 
     return(
-        <form onSubmit={onSubmit}>
-            <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120}/>
-            <input onChange={onFileChange} type="file" accept="image/*" ref={attachmentFile}/>
-            <input type="submit" value="Nweet"/>
+        <form onSubmit={onSubmit} className="factoryForm">
+            {/*<input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120}/>*/}
+            {/*<input onChange={onFileChange} type="file" accept="image/*" ref={attachmentFile}/>*/}
+            {/*<input type="submit" value="Nweet"/>*/}
+            {/*{*/}
+            {/*    // 이미지 데이터가 있으면 이미지를 보여줌*/}
+            {/*    attachment &&*/}
+            {/*    ( <div>*/}
+            {/*        <img src={attachment} width="100%" height="auto"/>*/}
+            {/*        <button onClick={onClearAttachment}>Clear</button>*/}
+            {/*    </div>)*/}
+            {/*}*/}
+
+            <div className="factoryInput__container">
+                <input
+                    className="factoryInput__input"
+                    value={nweet}
+                    onChange={onChange}
+                    type="text"
+                    placeholder="What's on your mind?"
+                    maxLength={120}
+                />
+                <input type="submit" value="&rarr;" className="factoryInput__arrow" />
+            </div>
+            <label htmlFor="attach-file" className="factoryInput__label">
+                <span>Add photos</span>
+                <FontAwesomeIcon icon={faPlus} />
+            </label>
+            <input id="attach-file"
+                   type="file"
+                   accept="image/*"
+                   onChange={onFileChange}
+                   style={{
+                       opacity: 0,
+                   }}
+                   ref={attachmentFile}
+            />
             {
-                // 이미지 데이터가 있으면 이미지를 보여줌
-                attachment &&
-                ( <div>
-                    <img src={attachment} width="100%" height="auto"/>
-                    <button onClick={onClearAttachment}>Clear</button>
+                attachment && (
+                <div className="factoryForm__attachment">
+                    <img src={attachment} />
+                    <div className="factoryForm__clear" onClick={onClearAttachment}>
+                        <span>Remove</span>
+                        <FontAwesomeIcon icon={faTimes}/>
+                    </div>
                 </div>)
             }
         </form>

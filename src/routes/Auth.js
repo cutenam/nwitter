@@ -5,6 +5,12 @@ import { getAuth,
     GithubAuthProvider, GoogleAuthProvider,
     signInWithPopup } from "firebase/auth";
 import AuthForm from "components/AuthForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faTwitter,
+    faGoogle,
+    faGithub,
+} from "@fortawesome/free-brands-svg-icons";
 
 
 /**
@@ -182,7 +188,13 @@ const Auth = ()=>{
     }
 
     return (
-        <div>
+        <div className="authContainer">
+            <FontAwesomeIcon
+                icon={faTwitter}
+                color={"#04AAFF"}
+                size="3x"
+                style={{ marginBottom: 30 }}
+            />
             {/* form 영역 AuthForm.js 로 리팩토링 */}
             {/*<form onSubmit={onSubmit}>*/}
             {/*    <input onChange={onChange} name="email" type="email" placeholder="Email" required value={email} />*/}
@@ -194,9 +206,9 @@ const Auth = ()=>{
             {/*</form>*/}
             {/*<span onClick={toggleAccount}>{newAccount ? "Sign in" : "Create Account"}</span>*/}
             <AuthForm></AuthForm>
-            <div>
-                <button onClick={onSocialClick} name="google">Continue with Google</button>
-                <button onClick={onSocialClick} name="github">Continue with Github</button>
+            <div className="authBtns">
+                <button className="authBtn" onClick={onSocialClick} name="google">Continue with Google <FontAwesomeIcon icon={faGoogle} /></button>
+                <button className="authBtn" onClick={onSocialClick} name="github">Continue with Github <FontAwesomeIcon icon={faGithub} /></button>
             </div>
         </div>
     )

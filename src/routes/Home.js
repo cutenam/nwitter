@@ -251,7 +251,7 @@ const Home =  ({userObj}) => {
     //
 
     return (
-    <div>
+    <div className="container">
         {/* form -> NweetFactory.js */}
         {/*<form onSubmit={onSubmit}>*/}
         {/*    <input value={nweet} onChange={onChange} type="text" placeholder="What's on your mind?" maxLength={120}/>*/}
@@ -267,7 +267,7 @@ const Home =  ({userObj}) => {
         {/*    }*/}
         {/*</form>*/}
         <NweetFactory userObj={userObj}></NweetFactory>
-        <div>
+        <div style={{ marginTop: 30 }}>
             {/*{*/}
             {/*    nweets.map(nweet =>*/}
             {/*        <div key={nweet.id}>*/}

@@ -10,6 +10,8 @@ import {collection, addDoc, getDocs,
     where,
     serverTimestamp} from "firebase/firestore";
 import {ref, deleteObject} from "firebase/storage"; // v9
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 const Nweet = ({nweetObj, isOwner}) => {
     // 수정 모드 알려주는 스테이트변수
@@ -38,7 +40,8 @@ const Nweet = ({nweetObj, isOwner}) => {
 
         if(ok) {
            await deleteDoc(nweetDocRef);
-           await deleteObject(ref(storageService, nweetObj.attachmentUrl));
+           // 첨부파일이 있는 경우만 파이어스토리지 deleteObject 호출
+           nweetObj.attachmentUrl && await deleteObject(ref(storageService, nweetObj.attachmentUrl));
         }
     }
 
@@ -77,32 +80,44 @@ const Nweet = ({nweetObj, isOwner}) => {
     };
 
    return (
-       <div>
+       <div className="nweet">
            {
                // 수정 버튼 true/false 에 따라, 입력폼 또는 메시지조회 화면 보여줌
                editing ?
                    (<>
-                       <form onSubmit={onSubmit}>
-                           <input onChange={onChange} type="text" placeholder="Edit your nweet" value={newNweet} required/>
-                           <input type="submit" value="Update Nweet"/>
+                       <form onSubmit={onSubmit} className="container nweetEdit">
+                           <input className="formInput" onChange={onChange} type="text" placeholder="Edit your nweet" value={newNweet} required autoFocus />
+                           <input className="formBtn" type="submit" value="Update Nweet"/>
                        </form>
 
-                       <button onClick={toggleEditing}>Cancel</button>
+                       {/*<button onClick={toggleEditing}>Cancel</button>*/}
+                       <span onClick={toggleEditing} className="formBtn cancelBtn">
+                         Cancel
+                       </span>
                    </>)
                    :
                    (<>
                        <h4>{nweetObj.text}</h4>
                        {
                            nweetObj.attachmentUrl &&
-                           <img src={nweetObj.attachmentUrl} width="50px" height="50px"/>
+                           // <img src={nweetObj.attachmentUrl} width="50px" height="50px"/>
+                           <img src={nweetObj.attachmentUrl}/>
                        }
                        {
                            // 본인이 작성한 트윗에서만 삭제, 수정 버튼이 보이도록함
                            isOwner &&
-                           <>
-                           <button onClick={onDeleteClick}>Delete Nweet</button>
-                           <button onClick={toggleEditing}>Edit Nweet</button>
-                           </>
+                           // <>
+                           // <button onClick={onDeleteClick}>Delete Nweet</button>
+                           // <button onClick={toggleEditing}>Edit Nweet</button>
+                           // </>
+                           (<div className="nweet__actions">
+                               <span onClick={onDeleteClick}>
+                                <FontAwesomeIcon icon={faTrash} />
+                               </span>
+                               <span onClick={toggleEditing}>
+                                 <FontAwesomeIcon icon={faPencilAlt} />
+                               </span>
+                           </div>)
                        }
                    </>)
            }
