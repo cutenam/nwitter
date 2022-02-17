@@ -7,9 +7,11 @@ import {collection, addDoc, getDocs,
     query,
     where,
     serverTimestamp} from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {ref, uploadString, getDownloadURL} from "firebase/storage"; // v9
 import Nweet from "components/Nweet";
 import NweetFactory from "../components/NweetFactory";  // v9
+
 
 
 // export default ()=> <span>Home</span>;
@@ -96,6 +98,13 @@ const Home =  ({userObj}) => {
                 // console.log(nweetArray);
                 setNweets(nweetArray);
             });
+
+            // onAuthStateChanged(getAuth(), (user) => {
+            //     if (user == null) {
+            //         unsubscribe();
+            //     }
+            // });
+
 
     }, []);
 
