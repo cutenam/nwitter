@@ -1,14 +1,14 @@
 import React, {useState, useRef} from "react";
+import {v4 as uuidv4} from "uuid";
 import {getDownloadURL, ref, uploadString} from "firebase/storage";
 import {dbService, storageService} from "firebaseInstance";
-import {v4 as uuidv4} from "uuid";
 import {addDoc, collection} from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * 트윗 메시지작성, 파일첨부 기능
- * Home.js 에서 리팩토리~~
+ * Home.js 에서 리팩토링
  * @param userObj
  * @returns {JSX.Element}
  * @constructor
@@ -28,32 +28,8 @@ const NweetFactory = ({userObj}) => {
         // storage Reference 에서 폴더를 만들 수 있다. 콜렉션과 비슷
         // 파일 이름은 중복되지 않도록 랜덤함수 등 이용(직접만들어도 되고, 노드 패키지 사용가능 npm install uuid )
         // 파일에 대한 레퍼런스 만듬
-        // v8
-        // const attachmentfileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
-        // format : FileReader 로 읽은 데이터 url?
-        // const response = await attachmentfileRef.putString(attachment, "data_url");
-        // console.log(await response.ref.getDownloadURL()) // 다운로드 URL　제공
-        // const attachmentUrl = await response.ref.getDownloadURL();
 
         let attachmentUrl = "";
-
-        // 첨부이미지가 있는 경우만 스토리지 API 호출
-        // if(attachment !== null) {
-        //     // v8
-        //     const attachmentfileRef = storageService.ref().child(`${userObj.uid}/${uuid4()}`);
-        //     const response = await attachmentfileRef.putString(attachment, "data_url");
-        //     console.log(await response.ref.getDownloadURL()) // 다운로드 URL　제공
-        //     const attachmentUrl = await response.ref.getDownloadURL();
-        //     attachmentUrl = "https://firebasestorage.googleapis.com/v0/b/nwitter-8cd1d.appspot.com/o/ibuni-1.jpg?alt=media&token=1103fa94-af2f-4a7f-af4f-25fa557f956b"
-        // }
-
-        // 이미지 URL　을 포함하여 도큐먼트 생성 객체를 만듬
-        // const docNweet = {
-        //     text: nweet,          // 도큐먼트 키, 스테이트 변수와 맞춤
-        //     createdAt: Date.now(), // 생성날짜
-        //     creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
-        //     attachmentUrl
-        // }
 
         // v9
         try {
@@ -78,13 +54,6 @@ const NweetFactory = ({userObj}) => {
             creatorId: userObj.uid, // 사용자 인증정보를 props로 받은 값 중, uid
             attachmentUrl
         }
-
-        // 파이어스토어에 콜렉션 생성하는 메소드, v8
-        // dbService.collection("nweets").add({
-        //     nweet: nweet,  // 도큐먼트 키, 스테이트 변수와 맞춤
-        //     // nweet
-        //     createdAt: Date.now(), // 생성날짜
-        // });
 
         // 파이어스토어에 콜렉션 생성하는 메소드, v9
         try {

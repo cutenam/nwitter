@@ -1,29 +1,26 @@
 import React, {useEffect, useState} from "react";
-// import AppRouter from "./Router";
-// import firebase from "../firebase";  // firebase.js 를 상대경로로 임포트, 절대경로로 임포트하기 위해서 jsconfig.json　파일에 루트 디렉토리를 설정해주면 가능함
 import AppRouter from "components/Router";
-// import firebase from "firebaseInstance";
-import {firebaseApp, authService} from "firebaseInstance";
-// import authService from "firebaseInstance";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {firebaseApp} from "firebaseInstance";
+import {getAuth, onAuthStateChanged } from "firebase/auth";
 
 /**
  * App
  * @returns {JSX.Element}
  * @constructor
  *
- * 1. 로그인 여부 확인 : authService.currentUser
- *  - 앱이 실행되어, 파이어베이스 모듈이 실행되는 시간이 걸리므로, 로그인되어있는 사용자 정보를 바로 보여줄 수 있도록 개선 필요 *
+ * 1. 로그인 여부 확인
+ *  - 앱이 실행되어, 파이어베이스 모듈이 실행되는 시간이 걸리므로, 로그인되어있는 사용자 정보를 바로 보여줄 수 있도록 개선 필요
  */
 
 // App.js　에서 어플리케이션의 모든 로직을 핸들링하도록 구조를 잡을거라 함
 const App = () => {
 
-  // const auth = fbase.auth();
-  const auth = authService;
+  // auth 객체
+  const auth = getAuth(firebaseApp);
+
   // 유저를 가져와서 로그인 여부를 판단하도록 하는 것!
   // console.log(auth.currentUser);
-  const authCurrentUser = auth.currentUser;
+  // const authCurrentUser = auth.currentUser;
   // auth.currentUser : 처음에는 null　값이 찍히고, 시간이 지나야 로그인 정보가 보임
   // 왜냐하면, 앱실행 후 파이어베이스 연동 시간이 걸리기 때문 => onAuthStateChanged 사용
   // setInterval(()=>{
@@ -36,7 +33,7 @@ const App = () => {
 
   // 로그인 여부 스테이트 -> Router.js에 props로 전달함
    // const [isLoggedIn, setIsLoggedIn] = useState(authCurrentUser);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // 현재 로그인된 사용자 정보 스테이트
   const [userObj, setUserObj] = useState(null);
@@ -46,14 +43,13 @@ const App = () => {
   // 실제 로그인된 시점을 알 수 있음
   useEffect( ()=>{
       console.log("App.js: useEffect");
-      // await authService.onAuthStateChanged( (user) => {
       onAuthStateChanged(getAuth(), (user) => {
           console.log("App.js : ", user);
           // 사용자 정보가 있으면 로그인 된것으로,,,
           if (user) {
-              // 로그인 여부 값은, 파이어베이스 인증이 호출되고, 스테이트변수 userObj 가 세팅되어야 로그인 된 것으로 볼 수 있으므로, 로직 내에서 동기식 판별은 불가
-              // 리액트 return() 실행 전, 본 함수가 완전 수행 된 다음, 리액트 내부에서 렌더링 처리 과정에, 스테이트 변수 userObj 값이 설정된 것으로 판단하는 것이 맞음
-              // setIsLoggedIn(true);
+            // 로그인 여부 값은, 파이어베이스 인증이 호출되고, 스테이트변수 userObj 가 세팅되어야 로그인 된 것으로 볼 수 있으므로, 로직 내에서 동기식 판별은 불가
+            // 리액트 return() 실행 전, 본 함수가 완전 수행 된 다음, 리액트 내부에서 렌더링 처리 과정에, 스테이트 변수 userObj 값이 설정된 것으로 판단하는 것이 맞음
+            // setIsLoggedIn(true);
 
             // console.log(user.updateProfile);  // v9 버전에서는 undefined
 
@@ -77,10 +73,8 @@ const App = () => {
 
             // 두번째 방법
             // setUserObj(user);
-
-
           } else {
-            setIsLoggedIn(false);
+            // setIsLoggedIn(false);
             // 로그아웃 관련 수정중...
             // 커스터마이징된 userObj 이므로 로그인상태가 아니면 초기화해 줌
             setUserObj(null);
@@ -105,7 +99,8 @@ const App = () => {
       // setUserObj(authService.currentUser);
       // setUserObj({displayName: "BS"});  // 단순 오브젝트
 
-      const user = authService.currentUser;
+      // const user = authService.currentUser;
+      const user = auth.currentUser;
 
       // 첫번째 방법
       setUserObj({
@@ -118,7 +113,6 @@ const App = () => {
       // target : 보통 빈 객체
       // 객체 복사
       // setUserObj(Object.assign({}, user));
-
   }
 
   return (

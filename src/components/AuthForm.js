@@ -14,7 +14,6 @@ const AuthForm = () => {
         // console.log(e.target.name);
 
         // 이벤트가 발생할 때, 폼태그 이름을 가져와서 구분하여 값을 별도로 처리함
-        // 훅
         const {
             target: {name, value}
         } = e;

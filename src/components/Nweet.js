@@ -26,14 +26,6 @@ const Nweet = ({nweetObj, isOwner}) => {
     const onDeleteClick = async () => {
         const ok = window.confirm("Are you sure want to delete this nweet?");
         // console.log(ok);
-
-       // v8
-       //  if(ok){
-       //      //delete
-       //      await dbService.doc(`nweets/${nweetObj.id}`).delete();  // 도큐먼트 삭제
-       //      await storageService.refFromURL(nweetObj.attachmentUrl).delete();  // 파일스토리지 파일 삭제
-       //  }
-
         // v9
         const nweetDocRef = doc(dbService, "nweets", `${nweetObj.id}`);
         // console.log(nweetDocRef);
@@ -58,12 +50,6 @@ const Nweet = ({nweetObj, isOwner}) => {
     const onSubmit = async (e) => {
         e.preventDefault();
         // console.log(nweetObj, newNweet);
-
-        // v8
-        // await dbService.doc(`nweets/${nweetObj.id}`).update({
-        //     text: newNweet,
-        // });
-
         // v9
         // const nweetDocRef = doc(dbService, "nweets", `${nweetObj.id}`);
         // console.log(nweetDocRef);

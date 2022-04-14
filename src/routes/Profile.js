@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {authService, dbService} from "firebaseInstance";
+import {authService, firebaseApp, dbService} from "firebaseInstance";
 import {collection, addDoc, getDocs,
     onSnapshot,
     orderBy,
     query,
     where,
     serverTimestamp} from "firebase/firestore";
-import { updateProfile } from "firebase/auth";  // v9
+import { getAuth, updateProfile } from "firebase/auth";  // v9
 // import {useHistory} from "react-router-dom";  // v5
 import { useNavigate } from "react-router-dom";    // v6
 
@@ -14,6 +14,8 @@ import { useNavigate } from "react-router-dom";    // v6
 // export default ()=> <span>Profile</span>;
 // const Profile = ()=> <span>Profile</span>;
 const Profile = ({refreshUser, userObj}) => {
+
+    const auth = getAuth(firebaseApp);
 
     // userObj 를 상위 컴포넌트에서 받지 않고, auth모듈 통해서 가져올 수도 있지 않나?
     // authService.currentUser.uid 이러한 방식으로...
@@ -34,7 +36,9 @@ const Profile = ({refreshUser, userObj}) => {
      * @returns {Promise<void>}
      */
     const onLogoutClick = () => {
-        authService.signOut();
+        // authService.signOut();
+        auth.signOut();
+
         // history.push("/");
         navigate("/");
         // 없으면, 컴포넌트 렌더링 에러 발생, userObj 재설정 해줌...
@@ -88,7 +92,7 @@ const Profile = ({refreshUser, userObj}) => {
             // })
 
             //v9
-            await updateProfile(authService.currentUser, {displayName: newDisplayName});
+            await updateProfile(/*authService.currentUser*/auth.currentUser, {displayName: newDisplayName});
             // await updateProfile(userObj, {displayName: newDisplayName});
             /**
              * Uncaught (in promise) TypeError: userInternal.getIdToken is not a function

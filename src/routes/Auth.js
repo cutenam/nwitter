@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {firebaseApp, authService} from "../firebaseInstance";
+// import {firebaseApp, authService} from "../firebaseInstance";
 import { getAuth,
     signInWithEmailAndPassword, createUserWithEmailAndPassword,
     GithubAuthProvider, GoogleAuthProvider,

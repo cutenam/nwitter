@@ -1,5 +1,4 @@
 import React from "react";
-// import {HashRouter as Router, Route, Switch, useSearchParams} from "react-router-dom";
 import {BrowserRouter, Navigate, Route, Routes, HashRouter} from "react-router-dom";
 
 import Auth from "routes/Auth";
@@ -18,8 +17,8 @@ const AppRouter= ({refreshUser, isLoggedIn, userObj}) => {
     /*  <></<> fragment : 여러 엘리먼트들을 렌더링할 필요가 있을때, 그것을 한번에 모아 렌더링이 가능하도록 빈 엘리번트로 감싸줌 */
     // Switch는 한번에 하나의 Router 만 렌더링 가능
     return (
-        // <BrowserRouter basename={process.env.PUBLIC_URL}>
-        <HashRouter basename="/">
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
+        {/*<HashRouter basename="/">*/}
             {/* isLoggedIn　이 true 일때  Navigation 이 보임, false 이면  isLoggedIn 이 보임*/}
             {isLoggedIn && <Navigation userObj={userObj} /> }
             <div
@@ -54,7 +53,7 @@ const AppRouter= ({refreshUser, isLoggedIn, userObj}) => {
                     }
                 </Routes>
             </div>
-        </HashRouter>
+        </BrowserRouter>
     )};
 
 export default AppRouter;
